@@ -150,7 +150,7 @@ def health():
     data = load_channel()
     return jsonify({
         "status": "ONLINE",
-        "channel": data.get("channel", {}).get("name", "NDL STUDIOS"),
+        "channel": data.get("channel", {}).get("name", "NDL Studio"),
         "mode": data.get("channel", {}).get("mode", "SIMULATED-LIVE"),
         "server_time": datetime.now(timezone.utc).isoformat(),
     })
@@ -327,7 +327,7 @@ init_db()
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", "5000"))
     print("\n==============================================")
-    print("  NDL STUDIOS - LINEAR STREAMING CHANNEL")
+    print("  NDL Studio - LINEAR STREAMING CHANNEL")
     print("  Local Broadcast Prototype")
     print(f"  http://127.0.0.1:{port}")
     print("==============================================\n")

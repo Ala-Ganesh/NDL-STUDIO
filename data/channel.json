@@ -1,19 +1,19 @@
 {
   "channel": {
-    "name": "NDL STUDIOS",
+    "name": "NDL STUDIO",
     "tagline": "Telugu Entertainment",
-    "description": "NDL STUDIOS is a Telugu entertainment-focused linear streaming channel prototype featuring scheduled programming, live-style broadcasting and audience interaction.",
+    "description": "NDL STUDIO is a Telugu entertainment-focused linear streaming channel prototype featuring scheduled programming, live-style broadcasting and audience interaction.",
     "status": "ON AIR",
     "mode": "SIMULATED-LIVE"
   },
   "programs": [
     {
       "id": 1,
-      "title": "NDL Studios Broadcast Test",
+      "title": "NDL Studio Broadcast Test",
       "type": "Channel Test",
       "duration_seconds": 20,
       "video": "/static/media/ndl_broadcast_test.mp4",
-      "description": "A sample test transmission created for the NDL STUDIOS local pilot."
+      "description": "A sample test transmission created for the NDL STUDIO local pilot."
     },
     {
       "id": 2,
@@ -21,7 +21,7 @@
       "type": "Classic Cinema",
       "duration_seconds": 60,
       "video": "/static/media/ndl_broadcast_test.mp4",
-      "description": "Demo programme slot. Replace with content for which NDL STUDIOS has verified streaming rights."
+      "description": "Demo programme slot. Replace with content for which NDL STUDIO has verified streaming rights."
     },
     {
       "id": 3,
@@ -41,7 +41,7 @@
     }
   ],
   "poll": {
-    "question": "What should NDL STUDIOS show next?",
+    "question": "What should NDL STUDIO show next?",
     "options": {
       "Classic Cinema": 0,
       "Comedy": 0,

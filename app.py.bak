@@ -45,7 +45,7 @@ def poll():
 def health():
     return jsonify({
         'status': 'ONLINE',
-        'channel': 'NDL STUDIOS',
+        'channel': 'NDL Studio',
         'mode': 'LOCALHOST SIMULATED-LIVE',
         'server_time': datetime.now().isoformat(timespec='seconds')
     })
@@ -53,7 +53,7 @@ def health():
 
 if __name__ == '__main__':
     print('\n==============================================')
-    print('  NDL STUDIOS - LINEAR STREAMING CHANNEL')
+    print('  NDL Studio - LINEAR STREAMING CHANNEL')
     print('  Local Broadcast Prototype')
     print('  http://127.0.0.1:5000')
     print('==============================================\n')

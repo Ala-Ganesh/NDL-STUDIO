@@ -1,6 +1,6 @@
 {
   "channel": {
-    "name": "NDL STUDIOS",
+    "name": "NDL STUDIO",
     "tagline": "Telugu Entertainment • Local Linear Streaming Pilot",
     "location": "Chilakaluripet, Andhra Pradesh",
     "status": "ON AIR",
@@ -9,11 +9,11 @@
   "programs": [
     {
       "id": 1,
-      "title": "NDL STUDIOS Broadcast Test",
+      "title": "NDL STUDIO Broadcast Test",
       "type": "Channel Test",
       "duration_seconds": 20,
       "video": "/static/media/ndl_broadcast_test.mp4",
-      "description": "A sample test transmission created for the NDL STUDIOS local pilot."
+      "description": "A sample test transmission created for the NDL STUDIO local pilot."
     },
     {
       "id": 2,
@@ -21,11 +21,11 @@
       "type": "Coming Soon",
       "duration_seconds": 60,
       "video": "/static/media/ndl_broadcast_test.mp4",
-      "description": "Replace this entry with a movie or programme for which NDL STUDIOS has verified streaming rights."
+      "description": "Replace this entry with a movie or programme for which NDL STUDIO has verified streaming rights."
     }
   ],
   "poll": {
-    "question": "What should NDL STUDIOS play next?",
+    "question": "What should NDL STUDIO play next?",
     "options": {
       "Classic Cinema": 0,
       "Comedy": 0,
