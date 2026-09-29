@@ -3,110 +3,526 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#070b14">
-    <meta name="description" content="NDL Studio is a Telugu entertainment-focused linear streaming channel prototype featuring scheduled programming, live-style broadcasting, audience interaction and digital entertainment.">
-    <meta property="og:title" content="NDL Studio — Telugu Entertainment">
-    <meta property="og:description" content="Telugu entertainment-focused linear streaming channel prototype.">
-    <meta property="og:type" content="website">
-    <title>NDL Studio — Telugu Entertainment</title>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23ff304f'/%3E%3Ctext x='32' y='40' text-anchor='middle' font-family='Arial' font-size='23' font-weight='900' fill='white'%3ENDL%3C/text%3E%3C/svg%3E">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <!-- =========================================================
+         NDL STUDIO — PAGE & SOCIAL METADATA
+         ========================================================= -->
+
+    <meta name="theme-color" content="#7C3CFF">
+
+    <meta
+        name="description"
+        content="NDL Studio is a modern simulated-live streaming platform built and developed by Ala Ganesh, a product of NDL STUDIOS."
+    >
+
+    <meta
+        name="author"
+        content="Ala Ganesh"
+    >
+
+    <meta
+        name="robots"
+        content="index, follow"
+    >
+
+    <link
+        rel="canonical"
+        href="https://ndl-studiox.onrender.com/"
+    >
+
+    <!-- Open Graph / WhatsApp / Facebook / LinkedIn -->
+    <meta
+        property="og:title"
+        content="NDL Studio — A Streaming Platform by Ala Ganesh"
+    >
+
+    <meta
+        property="og:description"
+        content="A modern simulated-live streaming platform built and developed by Ala Ganesh. A product of NDL STUDIOS."
+    >
+
+    <meta
+        property="og:type"
+        content="website"
+    >
+
+    <meta
+        property="og:url"
+        content="https://ndl-studiox.onrender.com/"
+    >
+
+    <meta
+        property="og:site_name"
+        content="NDL Studio"
+    >
+
+    <meta
+        property="og:locale"
+        content="en_IN"
+    >
+
+    <meta
+        property="og:image"
+        content="https://ndl-studiox.onrender.com/static/media/NDL_Studio_Logo.png"
+    >
+
+    <meta
+        property="og:image:alt"
+        content="NDL Studio — A Streaming Platform by Ala Ganesh"
+    >
+
+    <!-- Twitter / X -->
+    <meta
+        name="twitter:card"
+        content="summary"
+    >
+
+    <meta
+        name="twitter:title"
+        content="NDL Studio — A Streaming Platform by Ala Ganesh"
+    >
+
+    <meta
+        name="twitter:description"
+        content="A modern simulated-live streaming platform built and developed by Ala Ganesh."
+    >
+
+    <meta
+        name="twitter:image"
+        content="https://ndl-studiox.onrender.com/static/media/NDL_Studio_Logo.png"
+    >
+
+    <meta
+        name="twitter:image:alt"
+        content="NDL Studio — A Streaming Platform by Ala Ganesh"
+    >
+
+    <!-- Browser Title -->
+    <title>NDL Studio — A Streaming Platform by Ala Ganesh</title>
+
+    <!-- =========================================================
+         NDL STUDIO FAVICON
+         ========================================================= -->
+
+    <link
+        rel="icon"
+        type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%2300B8FF'/%3E%3Cstop offset='48%25' stop-color='%237C3CFF'/%3E%3Cstop offset='72%25' stop-color='%23E84CFF'/%3E%3Cstop offset='100%25' stop-color='%23FFB347'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Ctext x='32' y='40' text-anchor='middle' font-family='Arial,sans-serif' font-size='22' font-weight='900' fill='white'%3ENDL%3C/text%3E%3C/svg%3E"
+    >
+
+    <!-- Main Stylesheet -->
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
 </head>
+
 <body>
+
+<!-- =========================================================
+     TOP NAVIGATION
+     ========================================================= -->
+
 <header class="topbar">
-    <a class="brand-wrap" href="/" aria-label="NDL Studio home">
-        <div class="brand-mark">NDL</div>
-        <div>
-            <div class="brand-name">NDL Studio</div>
-            <div class="brand-sub creator-tagline">A STREAMING PLATFORM · BY ALA GANESH</div>
+
+    <a
+        class="brand-wrap"
+        href="/"
+        aria-label="NDL Studio home"
+    >
+
+        <img
+            class="ndl-platform-logo"
+            src="{{ url_for('static', filename='media/NDL_Studio_Logo.png') }}"
+            alt="NDL Studio"
+        >
+
+        <div class="brand-copy">
+
+            <div class="brand-name">
+                NDL Studio
+            </div>
+
+            <div class="brand-sub creator-tagline"><span class="platform-label">A STREAMING PLATFORM &middot;</span><span class="creator-name">BY ALA GANESH</span></div>
+
         </div>
+
     </a>
+
     <div class="top-actions">
-        <a href="#schedule">PROGRAMME GUIDE</a>
-        <span class="top-status"><span class="dot"></span><span>ON AIR</span></span>
+
+        <a href="#schedule">
+            PROGRAMME GUIDE
+        </a>
+
+        <span class="top-status">
+            <span class="dot"></span>
+            <span>ON AIR</span>
+        </span>
+
     </div>
+
 </header>
 
+
+<!-- =========================================================
+     MAIN CONTENT
+     ========================================================= -->
+
 <main class="container">
+
+    <!-- =====================================================
+         HERO / PLAYER SECTION
+         ===================================================== -->
+
     <section class="hero-grid">
+
+        <!-- PLAYER -->
+
         <div class="player-card">
+
             <div class="player-head">
-                <span class="live-pill"><span class="live-dot"></span> LIVE</span>
-                <span id="modeText">SIMULATED-LIVE</span>
+
+                <span class="live-pill">
+                    <span class="live-dot"></span>
+                    LIVE
+                </span>
+
+                <span id="modeText">
+                    SIMULATED-LIVE
+                </span>
+
             </div>
+
+
             <div class="video-wrap">
-                <video id="player" controls autoplay muted playsinline preload="metadata">
-                    <source id="videoSource" src="/static/media/ndl_broadcast_test.mp4" type="video/mp4">
+
+                <video
+                    id="player"
+                    controls
+                    autoplay
+                    muted
+                    playsinline
+                    preload="metadata"
+                >
+
+                    <source
+                        id="videoSource"
+                        src="/static/media/ndl_broadcast_test.mp4"
+                        type="video/mp4"
+                    >
+
                     Your browser does not support HTML5 video.
+
                 </video>
-                <div class="watermark">NDL Studio</div>
+
+                <div class="watermark">
+                    NDL Studio
+                </div>
+
             </div>
+
+
             <div class="player-footer">
+
                 <div>
-                    <div class="eyebrow">NOW PLAYING</div>
-                    <h1 id="nowTitle">Loading channel...</h1>
-                    <p id="nowDescription">Connecting to the NDL Studio channel scheduler.</p>
+
+                    <div class="eyebrow">
+                        NOW PLAYING
+                    </div>
+
+                    <h1 id="nowTitle">
+                        Loading channel...
+                    </h1>
+
+                    <p id="nowDescription">
+                        Connecting to the NDL Studio channel scheduler.
+                    </p>
+
                 </div>
+
+
                 <div class="clock-box">
-                    <div class="eyebrow">LOCAL TIME</div>
-                    <strong id="clock">--:--:--</strong>
+
+                    <div class="eyebrow">
+                        LOCAL TIME
+                    </div>
+
+                    <strong id="clock">
+                        --:--:--
+                    </strong>
+
                 </div>
+
             </div>
+
         </div>
+
+
+        <!-- NEXT PROGRAMME -->
 
         <aside class="side-card">
-            <div class="eyebrow">NEXT PROGRAMME</div>
-            <h2 id="nextTitle">Loading...</h2>
-            <div class="countdown-label">STARTS IN</div>
-            <div class="countdown" id="countdown">--:--</div>
-            <div class="progress"><div id="progressBar"></div></div>
-            <div class="meta-row"><span>CHANNEL</span><strong>NDL Studio</strong></div>
-            <div class="meta-row"><span>FORMAT</span><strong>LINEAR STREAM</strong></div>
-            <div class="meta-row"><span>STATUS</span><strong class="live-text">● ON AIR</strong></div>
+
+            <div class="eyebrow">
+                NEXT PROGRAMME
+            </div>
+
+            <h2 id="nextTitle">
+                Loading...
+            </h2>
+
+            <div class="countdown-label">
+                STARTS IN
+            </div>
+
+            <div
+                class="countdown"
+                id="countdown"
+            >
+                --:--
+            </div>
+
+            <div class="progress">
+                <div id="progressBar"></div>
+            </div>
+
+
+            <div class="meta-row">
+                <span>CHANNEL</span>
+                <strong>NDL Studio</strong>
+            </div>
+
+            <div class="meta-row">
+                <span>FORMAT</span>
+                <strong>LINEAR STREAM</strong>
+            </div>
+
+            <div class="meta-row">
+                <span>STATUS</span>
+                <strong class="live-text">
+                    ● ON AIR
+                </strong>
+            </div>
+
         </aside>
+
     </section>
 
-    <section id="schedule" class="info-grid">
+
+    <!-- =====================================================
+         PROGRAMME GUIDE + POLL
+         ===================================================== -->
+
+    <section
+        id="schedule"
+        class="info-grid"
+    >
+
+        <!-- PROGRAMME GUIDE -->
+
         <div class="panel schedule-panel">
+
             <div class="panel-heading">
+
                 <div>
-                    <div class="eyebrow">ELECTRONIC PROGRAMME GUIDE</div>
-                    <h2>NDL Studio Schedule</h2>
+
+                    <div class="eyebrow">
+                        ELECTRONIC PROGRAMME GUIDE
+                    </div>
+
+                    <h2>
+                        NDL Studio Schedule
+                    </h2>
+
                 </div>
-                <span class="badge">SIMULATED LIVE</span>
+
+                <span class="badge">
+                    SIMULATED LIVE
+                </span>
+
             </div>
-            <div id="scheduleList" class="schedule-list"></div>
+
+            <div
+                id="scheduleList"
+                class="schedule-list"
+            ></div>
+
         </div>
+
+
+        <!-- AUDIENCE POLL -->
 
         <div class="panel poll-panel">
-            <div class="eyebrow">AUDIENCE INTERACTION</div>
-            <h2 id="pollQuestion">What should NDL Studio show next?</h2>
-            <div id="pollOptions" class="poll-options"></div>
-            <div id="pollMessage" class="poll-note">Votes are stored locally for this prototype.</div>
+
+            <div class="eyebrow">
+                AUDIENCE INTERACTION
+            </div>
+
+            <h2 id="pollQuestion">
+                What should NDL Studio show next?
+            </h2>
+
+            <div
+                id="pollOptions"
+                class="poll-options"
+            ></div>
+
+            <div
+                id="pollMessage"
+                class="poll-note"
+            >
+                Votes are stored locally for this prototype.
+            </div>
+
         </div>
+
     </section>
+
+
+    <!-- =====================================================
+         ABOUT / PROJECT SECTION
+         ===================================================== -->
 
     <section class="about panel">
+
         <div>
-            <div class="eyebrow">THE PILOT</div>
-            <h2>Telugu Entertainment, Built Like a Channel</h2>
-            <p>NDL Studio is a software prototype for a linear streaming / FAST-style channel. The current version uses an authorized test asset to simulate scheduled playout without expensive streaming infrastructure.</p>
+
+            <div class="eyebrow">
+                THE PILOT
+            </div>
+
+            <h2>
+                A Streaming Platform, Built Like a Channel
+            </h2>
+
+            <p>
+                NDL Studio is a software prototype for a linear
+                streaming / FAST-style channel. The current version
+                uses an authorized test asset to simulate scheduled
+                playout without expensive streaming infrastructure.
+            </p>
+
+            <p>
+                Built and developed by
+                <strong>Ala Ganesh</strong>
+                as a product of
+                <strong>NDL STUDIOS</strong>.
+            </p>
+
         </div>
-        <div class="stack"><span>FLASK</span><span>HTML/CSS/JS</span><span>EPG</span><span>POLLING</span><span>TEST MEDIA</span></div>
+
+
+        <div class="stack">
+
+            <span>FLASK</span>
+            <span>HTML/CSS/JS</span>
+            <span>EPG</span>
+            <span>POLLING</span>
+            <span>TEST MEDIA</span>
+
+        </div>
+
     </section>
+
 </main>
 
+
+<!-- =========================================================
+     CREATOR FOOTER
+     ========================================================= -->
+
 <footer class="site-footer">
-    <div class="footer-credit">
-        © 2026 NDL Studio · Built &amp; Developed by
-        <a href="https://alaganesh-portfolio.onrender.com/" target="_blank" rel="noopener noreferrer">Ala Ganesh</a>
+
+    <div class="footer-identity">
+
+        <div class="footer-parent-brand">
+
+            <img
+                class="parent-brand-logo"
+                src="{{ url_for('static', filename='media/NDL_STUDIOS_LOGO.png') }}"
+                alt="NDL STUDIOS"
+            >
+
+            <div class="parent-brand-copy">
+
+                <div class="parent-brand-name">
+                    NDL STUDIOS
+                </div>
+
+                <div class="parent-brand-label">
+                    PARENT COMPANY
+                </div>
+
+                <div class="parent-brand-tagline">
+                    Dream without limits. Execute with focus.
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="footer-credit">
+
+            © 2026 <strong>NDL Studio</strong>
+            · Built &amp; Developed by
+
+            <a
+                href="https://alaganesh-portfolio.onrender.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Ala Ganesh
+            </a>
+
+        </div>
+
     </div>
 
-    <div class="footer-links" aria-label="Ala Ganesh links">
-        <a href="https://alaganesh-portfolio.onrender.com/" target="_blank" rel="noopener noreferrer">Portfolio</a>
-        <a href="https://www.linkedin.com/in/ala-ganesh/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-        <a href="https://github.com/Ala-Ganesh" target="_blank" rel="noopener noreferrer">GitHub</a>
+    <div
+        class="footer-links"
+        aria-label="Ala Ganesh links"
+    >
+
+        <a
+            href="https://alaganesh-portfolio.onrender.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            Portfolio
+        </a>
+
+        <a
+            href="https://www.linkedin.com/in/ala-ganesh/"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            LinkedIn
+        </a>
+
+        <a
+            href="https://github.com/Ala-Ganesh"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            GitHub
+        </a>
+
     </div>
-</footer><script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
+</footer>
+
+
+<!-- =========================================================
+     APPLICATION JAVASCRIPT
+     ========================================================= -->
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
 </body>
 </html>
+```
+
+
+
+
+
