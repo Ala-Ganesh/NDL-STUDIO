@@ -15,4 +15,4 @@ services:
       - key: SESSION_COOKIE_SECURE
         value: "1"
       - key: NDL_DATA_DIR
-        value: /var/data
+        value: ./data
