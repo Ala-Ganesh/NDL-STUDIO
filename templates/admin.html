@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NDL STUDIOS — Channel Admin</title>
+    <meta name="description" content="NDL STUDIOS prototype channel administration. Manage programmes, content rights and audience poll data.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="admin-page">
+<main class="container admin-container">
+    <div class="admin-header">
+        <div>
+            <div class="eyebrow">NDL STUDIOS</div>
+            <h1>Channel Admin</h1>
+            <p>Manage the prototype schedule, content metadata and audience interaction.</p>
+        </div>
+        <div class="admin-actions">
+            <a class="secondary-btn" href="/">View Channel</a>
+            <a class="secondary-btn" href="/admin/logout">Logout</a>
+        </div>
+    </div>
+
+    <section class="admin-grid">
+        <div class="panel">
+            <div class="eyebrow">PROGRAMME EDITOR</div>
+            <h2 id="formHeading">Add Programme</h2>
+            <form id="programForm" class="admin-form">
+                <input type="hidden" name="id" id="programId">
+                <label>Title<input name="title" id="programTitle" required></label>
+                <label>Type<input name="type" id="programType" value="Programme"></label>
+                <label>Duration (seconds)<input name="duration_seconds" id="programDuration" type="number" min="1" value="60" required></label>
+                <label>Video URL<input name="video" id="programVideo" value="/static/media/ndl_broadcast_test.mp4"></label>
+                <label>Description<textarea name="description" id="programDescription"></textarea></label>
+                <div class="form-actions">
+                    <button class="primary-btn" type="submit" id="saveProgram">Add Programme</button>
+                    <button class="secondary-btn" type="button" id="cancelEdit" hidden>Cancel Edit</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="panel">
+            <div class="panel-heading">
+                <div><div class="eyebrow">CURRENT SCHEDULE</div><h2>Programmes</h2></div>
+                <span class="badge">DRAG TO REORDER</span>
+            </div>
+            <div id="programAdminList" class="admin-list">
+                {% for p in channel.programs %}
+                <div class="admin-row" draggable="true" data-id="{{ p.id }}">
+                    <span class="drag-handle" title="Drag to reorder">☷</span>
+                    <div class="admin-row-main"><strong>{{ p.title }}</strong><small>{{ p.type }} · {{ p.duration_seconds }}s</small></div>
+                    <div class="row-actions">
+                        <button class="secondary-btn small-btn" data-edit="{{ p.id }}">Edit</button>
+                        <button class="danger-btn small-btn" data-delete="{{ p.id }}">Delete</button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <button id="saveOrder" class="secondary-btn order-btn" type="button">Save Programme Order</button>
+            <p class="poll-note">Schedule changes apply immediately to the simulated linear cycle.</p>
+        </div>
+    </section>
+
+    <section class="admin-grid">
+        <div class="panel">
+            <div class="eyebrow">POLL</div>
+            <h2>Audience Results</h2>
+            <div class="results">
+                {% for option, votes in channel.poll.options.items() %}
+                <div><span>{{ option }}</span><strong>{{ votes }}</strong></div>
+                {% endfor %}
+            </div>
+            <button id="resetPoll" class="secondary-btn">Reset Poll</button>
+        </div>
+
+        <div class="panel">
+            <div class="eyebrow">CONTENT LIBRARY</div>
+            <h2>Add Content Metadata</h2>
+            <form id="contentForm" class="admin-form">
+                <label>Title<input name="title" required></label>
+                <div class="two-col">
+                    <label>Type<input name="type" value="Programme"></label>
+                    <label>Year<input name="year" type="number" min="1900" max="2100"></label>
+                </div>
+                <div class="two-col">
+                    <label>Duration<input name="duration" placeholder="01:30:00"></label>
+                    <label>Rights Status
+                        <select name="rights_status">
+                            <option>ORIGINAL</option><option>LICENSED</option><option>PUBLIC DOMAIN</option><option>VERIFIED</option><option selected>PENDING REVIEW</option><option>NOT CLEARED</option>
+                        </select>
+                    </label>
+                </div>
+                <label>Video URL<input name="video" placeholder="/static/media/... or approved external URL"></label>
+                <label>Source<input name="source" placeholder="Creator / license / source reference"></label>
+                <label>Description<textarea name="description"></textarea></label>
+                <button class="primary-btn" type="submit">Add Content Record</button>
+            </form>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="eyebrow">RIGHTS REGISTER</div>
+        <h2>Content Records</h2>
+        <div class="content-list">
+        {% for item in content %}
+            <div class="content-row">
+                <div><strong>{{ item.title }}</strong><small>{{ item.type }}{% if item.year %} · {{ item.year }}{% endif %}{% if item.source %} · {{ item.source }}{% endif %}</small></div>
+                <span class="rights {{ item.rights_status|lower|replace(' ', '-') }}">{{ item.rights_status }}</span>
+            </div>
+        {% else %}
+            <p class="poll-note">No content records yet.</p>
+        {% endfor %}
+        </div>
+        <p class="poll-note rights-warning">Only publish content whose streaming/rebroadcast rights have been verified. A source URL alone is not proof of permission.</p>
+    </section>
+</main>
+<script>
+const programs = {{ channel.programs|tojson }};
+const form = document.getElementById('programForm');
+const idField = document.getElementById('programId');
+const heading = document.getElementById('formHeading');
+const saveButton = document.getElementById('saveProgram');
+const cancelEdit = document.getElementById('cancelEdit');
+const list = document.getElementById('programAdminList');
+
+function resetProgramForm() {
+    form.reset();
+    idField.value = '';
+    document.getElementById('programType').value = 'Programme';
+    document.getElementById('programDuration').value = 60;
+    document.getElementById('programVideo').value = '/static/media/ndl_broadcast_test.mp4';
+    heading.textContent = 'Add Programme';
+    saveButton.textContent = 'Add Programme';
+    cancelEdit.hidden = true;
+}
+
+document.querySelectorAll('[data-edit]').forEach(btn => btn.addEventListener('click', () => {
+    const p = programs.find(item => Number(item.id) === Number(btn.dataset.edit));
+    if (!p) return;
+    idField.value = p.id;
+    document.getElementById('programTitle').value = p.title || '';
+    document.getElementById('programType').value = p.type || 'Programme';
+    document.getElementById('programDuration').value = p.duration_seconds || 60;
+    document.getElementById('programVideo').value = p.video || '';
+    document.getElementById('programDescription').value = p.description || '';
+    heading.textContent = 'Edit Programme';
+    saveButton.textContent = 'Save Changes';
+    cancelEdit.hidden = false;
+    window.scrollTo({top: 0, behavior: 'smooth'});
+}));
+cancelEdit.addEventListener('click', resetProgramForm);
+
+form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const body = Object.fromEntries(new FormData(form));
+    body.duration_seconds = Number(body.duration_seconds);
+    const id = body.id;
+    delete body.id;
+    const url = id ? '/api/admin/programs/' + id : '/api/admin/programs';
+    const method = id ? 'PUT' : 'POST';
+    const r = await fetch(url, {method, headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
+    const d = await r.json();
+    if (d.ok) location.reload(); else alert(d.error || 'Could not save programme');
+});
+
+document.querySelectorAll('[data-delete]').forEach(btn => btn.addEventListener('click', async () => {
+    if (!confirm('Delete this programme?')) return;
+    const r = await fetch('/api/admin/programs/' + btn.dataset.delete, {method:'DELETE'});
+    const d = await r.json();
+    if (d.ok) location.reload(); else alert(d.error || 'Could not delete programme');
+}));
+
+let dragged = null;
+list.querySelectorAll('.admin-row').forEach(row => {
+    row.addEventListener('dragstart', () => { dragged = row; row.classList.add('dragging'); });
+    row.addEventListener('dragend', () => { dragged = null; row.classList.remove('dragging'); });
+    row.addEventListener('dragover', e => {
+        e.preventDefault();
+        if (!dragged || dragged === row) return;
+        const rect = row.getBoundingClientRect();
+        if (e.clientY < rect.top + rect.height / 2) list.insertBefore(dragged, row);
+        else list.insertBefore(dragged, row.nextSibling);
+    });
+});
+
+document.getElementById('saveOrder').addEventListener('click', async () => {
+    const ids = [...list.querySelectorAll('.admin-row')].map(row => Number(row.dataset.id));
+    const r = await fetch('/api/admin/programs/reorder', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ids})});
+    const d = await r.json();
+    if (d.ok) { alert('Programme order saved.'); location.reload(); } else alert(d.error || 'Could not save order');
+});
+
+document.getElementById('resetPoll').addEventListener('click', async () => {
+    if (!confirm('Reset all poll votes?')) return;
+    const r = await fetch('/api/admin/poll/reset', {method:'POST'});
+    const d = await r.json();
+    if (d.ok) location.reload(); else alert('Could not reset poll');
+});
+
+document.getElementById('contentForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const body = Object.fromEntries(new FormData(e.target));
+    const r = await fetch('/api/admin/content', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
+    const d = await r.json();
+    if (d.ok) location.reload(); else alert(d.error || 'Could not add content');
+});
+</script>
+</body>
+</html>

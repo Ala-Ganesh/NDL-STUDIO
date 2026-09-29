@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#070b14">
+    <meta name="description" content="NDL STUDIOS is a Telugu entertainment-focused linear streaming channel prototype featuring scheduled programming, live-style broadcasting, audience interaction and digital entertainment.">
+    <meta property="og:title" content="NDL STUDIOS — Telugu Entertainment">
+    <meta property="og:description" content="Telugu entertainment-focused linear streaming channel prototype.">
+    <meta property="og:type" content="website">
+    <title>NDL STUDIOS — Telugu Entertainment</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23ff304f'/%3E%3Ctext x='32' y='40' text-anchor='middle' font-family='Arial' font-size='23' font-weight='900' fill='white'%3ENDL%3C/text%3E%3C/svg%3E">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<header class="topbar">
+    <a class="brand-wrap" href="/" aria-label="NDL STUDIOS home">
+        <div class="brand-mark">NDL</div>
+        <div>
+            <div class="brand-name">NDL STUDIOS</div>
+            <div class="brand-sub">TELUGU ENTERTAINMENT</div>
+        </div>
+    </a>
+    <div class="top-actions">
+        <a href="#schedule">PROGRAMME GUIDE</a>
+        <span class="top-status"><span class="dot"></span><span>ON AIR</span></span>
+    </div>
+</header>
+
+<main class="container">
+    <section class="hero-grid">
+        <div class="player-card">
+            <div class="player-head">
+                <span class="live-pill"><span class="live-dot"></span> LIVE</span>
+                <span id="modeText">SIMULATED-LIVE</span>
+            </div>
+            <div class="video-wrap">
+                <video id="player" controls autoplay muted playsinline preload="metadata">
+                    <source id="videoSource" src="/static/media/ndl_broadcast_test.mp4" type="video/mp4">
+                    Your browser does not support HTML5 video.
+                </video>
+                <div class="watermark">NDL STUDIOS</div>
+            </div>
+            <div class="player-footer">
+                <div>
+                    <div class="eyebrow">NOW PLAYING</div>
+                    <h1 id="nowTitle">Loading channel...</h1>
+                    <p id="nowDescription">Connecting to the NDL STUDIOS channel scheduler.</p>
+                </div>
+                <div class="clock-box">
+                    <div class="eyebrow">LOCAL TIME</div>
+                    <strong id="clock">--:--:--</strong>
+                </div>
+            </div>
+        </div>
+
+        <aside class="side-card">
+            <div class="eyebrow">NEXT PROGRAMME</div>
+            <h2 id="nextTitle">Loading...</h2>
+            <div class="countdown-label">STARTS IN</div>
+            <div class="countdown" id="countdown">--:--</div>
+            <div class="progress"><div id="progressBar"></div></div>
+            <div class="meta-row"><span>CHANNEL</span><strong>NDL STUDIOS</strong></div>
+            <div class="meta-row"><span>FORMAT</span><strong>LINEAR STREAM</strong></div>
+            <div class="meta-row"><span>STATUS</span><strong class="live-text">● ON AIR</strong></div>
+        </aside>
+    </section>
+
+    <section id="schedule" class="info-grid">
+        <div class="panel schedule-panel">
+            <div class="panel-heading">
+                <div>
+                    <div class="eyebrow">ELECTRONIC PROGRAMME GUIDE</div>
+                    <h2>NDL STUDIOS Schedule</h2>
+                </div>
+                <span class="badge">SIMULATED LIVE</span>
+            </div>
+            <div id="scheduleList" class="schedule-list"></div>
+        </div>
+
+        <div class="panel poll-panel">
+            <div class="eyebrow">AUDIENCE INTERACTION</div>
+            <h2 id="pollQuestion">What should NDL STUDIOS show next?</h2>
+            <div id="pollOptions" class="poll-options"></div>
+            <div id="pollMessage" class="poll-note">Votes are stored locally for this prototype.</div>
+        </div>
+    </section>
+
+    <section class="about panel">
+        <div>
+            <div class="eyebrow">THE PILOT</div>
+            <h2>Telugu Entertainment, Built Like a Channel</h2>
+            <p>NDL STUDIOS is a software prototype for a linear streaming / FAST-style channel. The current version uses an authorized test asset to simulate scheduled playout without expensive streaming infrastructure.</p>
+        </div>
+        <div class="stack"><span>FLASK</span><span>HTML/CSS/JS</span><span>EPG</span><span>POLLING</span><span>TEST MEDIA</span></div>
+    </section>
+</main>
+
+<footer><strong>NDL STUDIOS</strong> · Telugu Entertainment · Linear Streaming Channel Prototype</footer>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

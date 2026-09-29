@@ -1,0 +1,13 @@
+[
+  {
+    "title": "NDL Studios Broadcast Test",
+    "type": "Test Broadcast",
+    "year": 2026,
+    "duration": "00:00:20",
+    "description": "Original test slate supplied with the NDL STUDIOS prototype.",
+    "thumbnail": "",
+    "video": "/static/media/ndl_broadcast_test.mp4",
+    "rights_status": "ORIGINAL",
+    "source": "NDL STUDIOS prototype"
+  }
+]

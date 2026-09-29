@@ -1,0 +1,109 @@
+let channelData = null;
+let currentIndex = 0;
+let remaining = 20;
+let totalDuration = 20;
+let pollData = null;
+
+const $ = (id) => document.getElementById(id);
+
+function formatTime(seconds) {
+    const s = Math.max(0, Math.floor(seconds));
+    const m = Math.floor(s / 60).toString().padStart(2, '0');
+    const sec = (s % 60).toString().padStart(2, '0');
+    return `${m}:${sec}`;
+}
+
+function updateClock() {
+    const now = new Date();
+    $('clock').textContent = now.toLocaleTimeString('en-IN', { hour12: false });
+}
+
+function renderNowNext() {
+    const programs = channelData.programs;
+    const current = programs[currentIndex];
+    const next = programs[(currentIndex + 1) % programs.length];
+
+    $('nowTitle').textContent = current.title;
+    $('nowDescription').textContent = current.description;
+    $('nextTitle').textContent = next.title;
+    totalDuration = Number(current.duration_seconds || 20);
+    remaining = totalDuration;
+    $('countdown').textContent = formatTime(remaining);
+    $('progressBar').style.width = '0%';
+
+    const player = $('player');
+    const source = $('videoSource');
+    source.src = current.video;
+    player.load();
+    player.play().catch(() => {});
+
+    renderSchedule();
+}
+
+function renderSchedule() {
+    const list = $('scheduleList');
+    list.innerHTML = '';
+    channelData.programs.forEach((p, i) => {
+        const row = document.createElement('div');
+        row.className = 'schedule-item' + (i === currentIndex ? ' active' : '');
+        row.innerHTML = `
+            <div class="time">${i === currentIndex ? 'NOW' : 'NEXT'}</div>
+            <div><div class="program-title">${p.title}</div><div class="program-type">${p.type}</div></div>
+            <div>${i === currentIndex ? '<span class="now-badge">ON AIR</span>' : ''}</div>
+        `;
+        list.appendChild(row);
+    });
+}
+
+function renderPoll() {
+    $('pollQuestion').textContent = pollData.question;
+    const container = $('pollOptions');
+    container.innerHTML = '';
+    Object.entries(pollData.options).forEach(([option, votes]) => {
+        const btn = document.createElement('button');
+        btn.className = 'poll-btn';
+        btn.innerHTML = `${option}<span class="votes">${votes}</span>`;
+        btn.onclick = async () => {
+            const response = await fetch('/api/poll', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({option})
+            });
+            const result = await response.json();
+            if (result.ok) {
+                pollData = result.poll;
+                renderPoll();
+            }
+        };
+        container.appendChild(btn);
+    });
+}
+
+function tick() {
+    remaining -= 1;
+    if (remaining <= 0) {
+        currentIndex = (currentIndex + 1) % channelData.programs.length;
+        renderNowNext();
+        return;
+    }
+    $('countdown').textContent = formatTime(remaining);
+    const elapsed = totalDuration - remaining;
+    $('progressBar').style.width = `${Math.min(100, (elapsed / totalDuration) * 100)}%`;
+}
+
+async function init() {
+    const response = await fetch('/api/channel');
+    channelData = await response.json();
+    pollData = channelData.poll;
+    currentIndex = 0;
+    renderNowNext();
+    renderPoll();
+    updateClock();
+    setInterval(updateClock, 1000);
+    setInterval(tick, 1000);
+}
+
+init().catch(err => {
+    console.error(err);
+    $('nowTitle').textContent = 'Channel data unavailable';
+});

@@ -1,0 +1,60 @@
+from flask import Flask, render_template, jsonify, request
+from pathlib import Path
+from datetime import datetime
+import json
+
+BASE_DIR = Path(__file__).resolve().parent
+DATA_FILE = BASE_DIR / 'data' / 'channel.json'
+
+app = Flask(__name__)
+
+
+def load_data():
+    with open(DATA_FILE, 'r', encoding='utf-8') as f:
+        return json.load(f)
+
+
+def save_data(data):
+    with open(DATA_FILE, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+
+@app.route('/api/channel')
+def channel():
+    return jsonify(load_data())
+
+
+@app.route('/api/poll', methods=['POST'])
+def poll():
+    data = load_data()
+    payload = request.get_json(silent=True) or {}
+    option = payload.get('option')
+    if option not in data.get('poll', {}).get('options', {}):
+        return jsonify({'ok': False, 'error': 'Invalid poll option'}), 400
+    data['poll']['options'][option] += 1
+    save_data(data)
+    return jsonify({'ok': True, 'poll': data['poll']})
+
+
+@app.route('/api/health')
+def health():
+    return jsonify({
+        'status': 'ONLINE',
+        'channel': 'NDL STUDIOS',
+        'mode': 'LOCALHOST SIMULATED-LIVE',
+        'server_time': datetime.now().isoformat(timespec='seconds')
+    })
+
+
+if __name__ == '__main__':
+    print('\n==============================================')
+    print('  NDL STUDIOS - LINEAR STREAMING CHANNEL')
+    print('  Local Broadcast Prototype')
+    print('  http://127.0.0.1:5000')
+    print('==============================================\n')
+    app.run(host='127.0.0.1', port=5000, debug=True)

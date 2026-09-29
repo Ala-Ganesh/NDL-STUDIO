@@ -1,0 +1,52 @@
+{
+  "channel": {
+    "name": "NDL STUDIOS",
+    "tagline": "Telugu Entertainment",
+    "description": "NDL STUDIOS is a Telugu entertainment-focused linear streaming channel prototype featuring scheduled programming, live-style broadcasting and audience interaction.",
+    "status": "ON AIR",
+    "mode": "SIMULATED-LIVE"
+  },
+  "programs": [
+    {
+      "id": 1,
+      "title": "NDL Studios Broadcast Test",
+      "type": "Channel Test",
+      "duration_seconds": 20,
+      "video": "/static/media/ndl_broadcast_test.mp4",
+      "description": "A sample test transmission created for the NDL STUDIOS local pilot."
+    },
+    {
+      "id": 2,
+      "title": "Telugu Classic Cinema",
+      "type": "Classic Cinema",
+      "duration_seconds": 60,
+      "video": "/static/media/ndl_broadcast_test.mp4",
+      "description": "Demo programme slot. Replace with content for which NDL STUDIOS has verified streaming rights."
+    },
+    {
+      "id": 3,
+      "title": "Telugu Entertainment",
+      "type": "Entertainment",
+      "duration_seconds": 60,
+      "video": "/static/media/ndl_broadcast_test.mp4",
+      "description": "Demo entertainment slot using the authorized test broadcast asset."
+    },
+    {
+      "id": 4,
+      "title": "Overnight Classics",
+      "type": "Classic Programming",
+      "duration_seconds": 60,
+      "video": "/static/media/ndl_broadcast_test.mp4",
+      "description": "Demo overnight slot. Add only authorized, original, public-domain or licensed media."
+    }
+  ],
+  "poll": {
+    "question": "What should NDL STUDIOS show next?",
+    "options": {
+      "Classic Cinema": 0,
+      "Comedy": 0,
+      "Music": 0,
+      "Short Films": 0
+    }
+  }
+}
