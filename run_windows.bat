@@ -1,7 +1,7 @@
 @echo off
 cd /d "%~dp0"
 echo ==============================================
-echo        NDL STUDIOS LOCAL BROADCAST
+echo        NDL Studio LOCAL BROADCAST
  echo ==============================================
 if not exist .venv (
     echo Creating virtual environment...
