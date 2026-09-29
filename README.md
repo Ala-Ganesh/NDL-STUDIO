@@ -57,7 +57,7 @@ The password comes from `ADMIN_PASSWORD`. If it is not set, the prototype falls 
 ## Project structure
 
 ```text
-NDL_STUDIOS_Linear_Streaming_Channel/
+NDL_STUDIO/
 ├── app.py
 ├── requirements.txt
 ├── Procfile
