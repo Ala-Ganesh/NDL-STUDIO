@@ -1,14 +1,14 @@
-# NDL Studio
+# NDL STUDIOS
 
 ## Telugu Linear Streaming Channel Prototype
 
-NDL Studio is a Telugu entertainment-focused **linear streaming / FAST-style prototype**. It simulates a scheduled channel using authorized test media, a programme guide, audience polling and a small Flask administration layer.
+NDL STUDIOS is a Telugu entertainment-focused **linear streaming / FAST-style prototype**. It simulates a scheduled channel using authorized test media, a programme guide, audience polling and a small Flask administration layer.
 
 > **Rights note:** This project does not provide or download pirated movies. Only original, public-domain, licensed, or otherwise verified content should be published.
 
 ## Features
 
-- TV-style NDL Studio live channel interface
+- TV-style NDL STUDIOS live channel interface
 - Simulated-linear playout based on programme durations
 - Current programme / next programme / countdown
 - EPG-style programme guide
@@ -108,7 +108,7 @@ A free web service is suitable for a **showcase/demo**, not for dependable 24/7 
 ## Streaming architecture roadmap
 
 ```text
-NDL Studio Web App
+NDL STUDIOS Web App
         │
         ├── EPG / programme metadata
         ├── polls / analytics
@@ -133,7 +133,7 @@ Every programme should have a clear rights status before public playback. Sugges
 - `PENDING REVIEW`
 - `NOT CLEARED`
 
-Being able to find a movie online does **not** establish NDL Studio has permission to rebroadcast it.
+Being able to find a movie online does **not** establish NDL STUDIOS has permission to rebroadcast it.
 
 ## Future roadmap
 
@@ -148,4 +148,4 @@ Being able to find a movie online does **not** establish NDL Studio has permissi
 
 ## Author
 
-Ala Ganesh — NDL Studio prototype
+Ala Ganesh — NDL STUDIOS prototype

@@ -1,6 +1,6 @@
 Set-Location $PSScriptRoot
 Write-Host '=============================================='
-Write-Host '       NDL Studio LOCAL BROADCAST'
+Write-Host '       NDL STUDIOS LOCAL BROADCAST'
 Write-Host '=============================================='
 if (-not (Test-Path '.venv')) { py -m venv .venv }
 .\.venv\Scripts\Activate.ps1
