@@ -1,13 +1,38 @@
 :root {
-    --bg: #070b14;
-    --panel: #0e1524;
-    --panel2: #111b2e;
-    --line: rgba(255,255,255,.09);
-    --text: #f4f7fb;
-    --muted: #9ba8bb;
-    --accent: #ff304f;
-    --accent2: #ff6b81;
+    /* NDL Studio — Aurora Brand System */
+    --ndl-midnight: #050812;
+    --ndl-blue: #00b8ff;
+    --ndl-violet: #7c3cff;
+    --ndl-amber: #ffb347;
+
+    /* Core UI */
+    --bg: var(--ndl-midnight);
+    --panel: #0b1020;
+    --panel2: #11162a;
+    --line: rgba(148, 166, 210, .14);
+    --text: #f7f9ff;
+    --muted: #9ca8bd;
+
+    /* Brand accents */
+    --accent: var(--ndl-blue);
+    --accent2: var(--ndl-violet);
+    --cinema: var(--ndl-amber);
+
+    /* Status */
     --green: #28d17c;
+
+    /* Signature NDL gradient */
+    --ndl-gradient: linear-gradient(
+        135deg,
+        var(--ndl-blue) 0%,
+        var(--ndl-violet) 52%,
+        var(--ndl-amber) 100%
+    );
+
+    /* Brand glow */
+    --ndl-glow:
+        0 0 28px rgba(0, 184, 255, .18),
+        0 0 55px rgba(124, 60, 255, .12);
 }
 
 * { box-sizing: border-box; }
@@ -224,5 +249,505 @@ select:focus { border-color:rgba(255,48,79,.55); }
     .footer-links {
         gap: 14px;
         flex-wrap: wrap;
+    }
+}
+/* Micro creator tagline */
+.creator-tagline {
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 1.35px;
+    margin-top: 3px;
+    background: linear-gradient(90deg, #6f9cff, #b48cff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: #8ea8ff;
+    opacity: .9;
+}
+/* =========================================================
+   NDL Studio — Aurora Visual Identity
+   Midnight + Electric Blue + Violet + Cinema Amber
+   ========================================================= */
+
+.brand-mark {
+    background: var(--ndl-gradient);
+    box-shadow: var(--ndl-glow);
+}
+
+.brand-name {
+    background: linear-gradient(
+        90deg,
+        #ffffff 0%,
+        #dfe8ff 55%,
+        #b9a7ff 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: #ffffff;
+}
+
+.creator-tagline {
+    background: var(--ndl-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: var(--ndl-blue);
+}
+
+.top-status .dot {
+    background: var(--ndl-blue);
+    box-shadow: 0 0 12px rgba(0, 184, 255, .75);
+}
+
+.live-pill {
+    color: #ffffff;
+    background: linear-gradient(
+        135deg,
+        rgba(0, 184, 255, .14),
+        rgba(124, 60, 255, .18)
+    );
+    border-color: rgba(0, 184, 255, .42);
+    box-shadow: 0 0 22px rgba(0, 184, 255, .10);
+}
+
+.live-dot {
+    background: var(--ndl-blue);
+    box-shadow: 0 0 10px var(--ndl-blue);
+}
+
+.progress div {
+    background: var(--ndl-gradient);
+    box-shadow: 0 0 16px rgba(124, 60, 255, .25);
+}
+
+.schedule-item.active {
+    border-color: rgba(0, 184, 255, .48);
+    background: linear-gradient(
+        135deg,
+        rgba(0, 184, 255, .07),
+        rgba(124, 60, 255, .08)
+    );
+    box-shadow: inset 3px 0 0 var(--ndl-blue);
+}
+
+.now-badge {
+    background: var(--ndl-gradient);
+    box-shadow: 0 0 18px rgba(124, 60, 255, .20);
+}
+
+.poll-btn:hover {
+    border-color: rgba(0, 184, 255, .55);
+    background: linear-gradient(
+        135deg,
+        rgba(0, 184, 255, .08),
+        rgba(124, 60, 255, .10)
+    );
+}
+
+.live-text {
+    color: var(--ndl-blue) !important;
+}
+
+.badge {
+    border-color: rgba(124, 60, 255, .28);
+    background: rgba(124, 60, 255, .09);
+}
+
+.primary-btn {
+    border-color: rgba(0, 184, 255, .45);
+    background: var(--ndl-gradient);
+    box-shadow: 0 8px 25px rgba(124, 60, 255, .18);
+}
+
+.primary-btn:hover {
+    box-shadow:
+        0 8px 30px rgba(0, 184, 255, .20),
+        0 8px 40px rgba(124, 60, 255, .16);
+    transform: translateY(-1px);
+}
+
+.secondary-btn {
+    border-color: rgba(0, 184, 255, .24);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: rgba(0, 184, 255, .55);
+    box-shadow: 0 0 0 3px rgba(0, 184, 255, .07);
+}
+
+.rights.original,
+.rights.verified,
+.rights.licensed,
+.rights.public-domain {
+    color: #69d9ff;
+}
+
+.footer-credit a,
+.footer-links a:hover {
+    color: var(--ndl-blue);
+}
+
+.site-footer {
+    background:
+        radial-gradient(
+            circle at 50% 0%,
+            rgba(124, 60, 255, .07),
+            transparent 55%
+        );
+}
+
+.watermark {
+    color: rgba(0, 184, 255, .62);
+    text-shadow: 0 0 12px rgba(0, 184, 255, .18);
+}
+
+/* =========================================================
+   NDL Studio — WHITE AURORA SIGNATURE THEME
+   Clean • Cinematic • Classic • Modern • Technology
+   ========================================================= */
+
+html,
+body {
+    background:
+        radial-gradient(circle at 8% 8%, rgba(0, 184, 255, .12), transparent 28%),
+        radial-gradient(circle at 92% 18%, rgba(124, 60, 255, .11), transparent 30%),
+        radial-gradient(circle at 50% 100%, rgba(255, 179, 71, .08), transparent 32%),
+        #f7f9fd;
+    color: #101a35;
+}
+
+/* ---------- Header ---------- */
+
+.topbar {
+    background: rgba(255, 255, 255, .88);
+    border-bottom: 1px solid rgba(20, 45, 90, .10);
+    box-shadow: 0 8px 30px rgba(25, 45, 90, .07);
+}
+
+.brand-name {
+    color: #101a35;
+    -webkit-text-fill-color: #101a35;
+    background: none;
+}
+
+.brand-sub {
+    color: #60708d;
+}
+
+.creator-tagline {
+    background: var(--ndl-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.top-actions > a {
+    color: #53627c;
+}
+
+.top-actions > a:hover {
+    color: var(--ndl-violet);
+}
+
+/* ---------- Main background ---------- */
+
+.container {
+    position: relative;
+}
+
+.container::before {
+    content: "";
+    position: fixed;
+    inset: 76px 0 0;
+    pointer-events: none;
+    z-index: -1;
+    background:
+        radial-gradient(circle at 15% 35%, rgba(0, 184, 255, .055), transparent 25%),
+        radial-gradient(circle at 85% 55%, rgba(124, 60, 255, .055), transparent 25%);
+}
+
+/* ---------- Cards ---------- */
+
+.player-card,
+.side-card,
+.panel {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, .96),
+            rgba(247, 250, 255, .94)
+        );
+    border: 1px solid rgba(38, 73, 130, .12);
+    box-shadow:
+        0 18px 45px rgba(36, 61, 105, .10),
+        0 2px 8px rgba(36, 61, 105, .05);
+}
+
+/* ---------- Player ---------- */
+
+.player-head {
+    color: #62718b;
+    background: linear-gradient(
+        90deg,
+        rgba(0, 184, 255, .045),
+        rgba(124, 60, 255, .035),
+        rgba(255, 179, 71, .035)
+    );
+}
+
+.live-pill {
+    color: #17213a;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0, 184, 255, .12),
+            rgba(124, 60, 255, .10)
+        );
+    border-color: rgba(0, 184, 255, .35);
+}
+
+.video-wrap {
+    background: #07101f;
+    box-shadow:
+        inset 0 0 0 1px rgba(0, 0, 0, .15),
+        0 10px 30px rgba(20, 35, 70, .12);
+}
+
+.watermark {
+    color: rgba(255, 255, 255, .72);
+}
+
+.player-footer {
+    background:
+        linear-gradient(
+            90deg,
+            rgba(0, 184, 255, .025),
+            transparent 45%,
+            rgba(124, 60, 255, .035)
+        );
+}
+
+h1,
+h2 {
+    color: #101a35;
+}
+
+p {
+    color: #62718b;
+}
+
+/* ---------- Next Programme ---------- */
+
+.side-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.side-card::after {
+    content: "";
+    position: absolute;
+    width: 190px;
+    height: 190px;
+    right: -90px;
+    top: -90px;
+    border-radius: 50%;
+    background:
+        radial-gradient(
+            circle,
+            rgba(124, 60, 255, .13),
+            rgba(0, 184, 255, .04) 45%,
+            transparent 70%
+        );
+    pointer-events: none;
+}
+
+.side-card h2 {
+    color: #111b38;
+}
+
+.countdown-label {
+    color: #71809a;
+}
+
+.countdown {
+    color: #101a35;
+}
+
+.progress {
+    background: #e2e8f3;
+}
+
+.progress div {
+    background: var(--ndl-gradient);
+}
+
+.meta-row {
+    border-color: rgba(38, 73, 130, .10);
+    color: #71809a;
+}
+
+.meta-row strong {
+    color: #1b2742;
+}
+
+/* ---------- Schedule ---------- */
+
+.panel-heading h2 {
+    color: #101a35;
+}
+
+.eyebrow {
+    color: #71809a;
+}
+
+.badge {
+    color: #5142a8;
+    background: rgba(124, 60, 255, .07);
+    border-color: rgba(124, 60, 255, .18);
+}
+
+.schedule-item {
+    border-color: rgba(38, 73, 130, .10);
+    background: rgba(255, 255, 255, .68);
+}
+
+.schedule-item:hover {
+    border-color: rgba(0, 184, 255, .28);
+    box-shadow: 0 8px 24px rgba(36, 61, 105, .07);
+}
+
+.schedule-item.active {
+    border-color: rgba(0, 184, 255, .52);
+    background:
+        linear-gradient(
+            100deg,
+            rgba(0, 184, 255, .08),
+            rgba(124, 60, 255, .055),
+            rgba(255, 179, 71, .035)
+        );
+    box-shadow:
+        inset 4px 0 0 var(--ndl-blue),
+        0 8px 25px rgba(0, 184, 255, .08);
+}
+
+.time {
+    color: #566783;
+}
+
+.program-title {
+    color: #182440;
+}
+
+.program-type {
+    color: #75839a;
+}
+
+.now-badge {
+    background: var(--ndl-gradient);
+}
+
+/* ---------- Poll ---------- */
+
+.poll-btn {
+    color: #17213a;
+    background: #ffffff;
+    border-color: rgba(38, 73, 130, .12);
+}
+
+.poll-btn:hover {
+    border-color: rgba(0, 184, 255, .45);
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0, 184, 255, .055),
+            rgba(124, 60, 255, .045)
+        );
+    box-shadow: 0 7px 20px rgba(36, 61, 105, .07);
+}
+
+.poll-btn .votes {
+    color: #77859d;
+}
+
+.poll-note {
+    color: #78869c;
+}
+
+/* ---------- About ---------- */
+
+.about {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 255, 255, .98),
+            rgba(247, 250, 255, .95)
+        );
+}
+
+.stack span {
+    color: #62718b;
+    border-color: rgba(38, 73, 130, .12);
+    background: rgba(255, 255, 255, .7);
+}
+
+/* ---------- Signature accents ---------- */
+
+.live-text {
+    color: #008fc9 !important;
+}
+
+.top-status .dot {
+    background: #00b8ff;
+    box-shadow: 0 0 12px rgba(0, 184, 255, .55);
+}
+
+/* ---------- Footer ---------- */
+
+.site-footer {
+    background:
+        linear-gradient(
+            180deg,
+            rgba(247, 249, 253, .70),
+            rgba(239, 244, 252, .96)
+        );
+    border-top: 1px solid rgba(38, 73, 130, .10);
+}
+
+.footer-credit {
+    color: #697892;
+}
+
+.footer-credit a {
+    color: #5361c9;
+}
+
+.footer-links a {
+    color: #71809a;
+}
+
+.footer-links a:hover {
+    color: var(--ndl-violet);
+}
+
+/* ---------- Global links ---------- */
+
+a {
+    color: inherit;
+}
+
+/* ---------- Responsive polish ---------- */
+
+@media (max-width: 560px) {
+    .topbar {
+        background: rgba(255, 255, 255, .94);
+    }
+
+    .player-card,
+    .side-card,
+    .panel {
+        border-radius: 15px;
     }
 }
