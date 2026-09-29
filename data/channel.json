@@ -8,36 +8,28 @@
   },
   "programs": [
     {
-      "id": 1,
-      "title": "NDL Studio Broadcast Test",
-      "type": "Channel Test",
-      "duration_seconds": 20,
-      "video": "/static/media/ndl_broadcast_test.mp4",
-      "description": "A sample test transmission created for the NDL Studio local pilot."
+      "id": 6,
+      "title": "మాయాబజార్",
+      "type": "Movie",
+      "duration_seconds": 10590,
+      "video": "https://upload.wikimedia.org/wikipedia/commons/3/34/%E0%B0%AE%E0%B0%BE%E0%B0%AF%E0%B0%BE%E0%B0%AC%E0%B0%9C%E0%B0%BE%E0%B0%B0%E0%B1%8D_1957.webm?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original",
+      "description": ""
     },
     {
-      "id": 2,
-      "title": "Telugu Classic Cinema",
-      "type": "Classic Cinema",
-      "duration_seconds": 60,
-      "video": "/static/media/ndl_broadcast_test.mp4",
-      "description": "Demo programme slot. Replace with content for which NDL Studio has verified streaming rights."
+      "id": 7,
+      "title": "మిస్సమ్మ",
+      "type": "Movie",
+      "duration_seconds": 9940,
+      "video": "https://upload.wikimedia.org/wikipedia/commons/3/3c/Missamma_Full_Length_Telugu_Movie_--_N._T._Rama_Rao%2C_A._Nageswara_Rao%2C_Jamuna%2C_Savitri.webm?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original",
+      "description": ""
     },
     {
-      "id": 3,
-      "title": "Telugu Entertainment",
-      "type": "Entertainment",
-      "duration_seconds": 60,
-      "video": "/static/media/ndl_broadcast_test.mp4",
-      "description": "Demo entertainment slot using the authorized test broadcast asset."
-    },
-    {
-      "id": 4,
-      "title": "Overnight Classics",
-      "type": "Classic Programming",
-      "duration_seconds": 60,
-      "video": "/static/media/ndl_broadcast_test.mp4",
-      "description": "Demo overnight slot. Add only authorized, original, public-domain or licensed media."
+      "id": 8,
+      "title": "కన్యాసులకం",
+      "type": "Retro Movie",
+      "duration_seconds": 10061,
+      "video": "https://upload.wikimedia.org/wikipedia/commons/5/51/Kanyasulkam_%281955%29.webm?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original",
+      "description": ""
     }
   ],
   "poll": {

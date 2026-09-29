@@ -1,11 +1,18 @@
 services:
   - type: web
-    name: ndl-studios
+    name: ndl-studio
     runtime: python
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
+    healthCheckPath: /api/health
     envVars:
       - key: SECRET_KEY
         generateValue: true
       - key: ADMIN_PASSWORD
         sync: false
+      - key: FLASK_DEBUG
+        value: "0"
+      - key: SESSION_COOKIE_SECURE
+        value: "1"
+      - key: NDL_DATA_DIR
+        value: /var/data

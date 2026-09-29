@@ -2,21 +2,54 @@ from flask import Flask, render_template, jsonify, request, session, redirect, u
 from pathlib import Path
 from datetime import datetime, timezone
 from functools import wraps
+from urllib.parse import urlparse
 import json
 import os
 import sqlite3
 import time
 
 BASE_DIR = Path(__file__).resolve().parent
-DATA_DIR = BASE_DIR / "data"
+
+SOURCE_DATA_DIR = BASE_DIR / "data"
+DATA_DIR = Path(os.environ.get("NDL_DATA_DIR", str(SOURCE_DATA_DIR)))
+
 DATA_FILE = DATA_DIR / "channel.json"
 CONTENT_FILE = DATA_DIR / "content.json"
 DB_FILE = DATA_DIR / "ndl_studios.db"
 
+
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "ndl-local-development-secret-change-me")
 
+DEBUG = os.environ.get("FLASK_DEBUG", "0") == "1"
 
+SECRET_KEY = os.environ.get("SECRET_KEY")
+if not SECRET_KEY:
+    SECRET_KEY = (
+        "ndl-local-development-secret-change-me"
+        if DEBUG
+        else os.urandom(32)
+    )
+
+app.secret_key = SECRET_KEY
+
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Lax",
+    SESSION_COOKIE_SECURE=os.environ.get("SESSION_COOKIE_SECURE", "0") == "1",
+)
+
+def ensure_runtime_data():
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+
+    if DATA_DIR == SOURCE_DATA_DIR:
+        return
+
+    for filename in ("channel.json", "content.json"):
+        source = SOURCE_DATA_DIR / filename
+        target = DATA_DIR / filename
+
+        if source.exists() and not target.exists():
+            target.write_bytes(source.read_bytes())
 def load_json(path, default):
     try:
         with open(path, "r", encoding="utf-8") as f:
@@ -33,12 +66,39 @@ def save_json(path, data):
     temp.replace(path)
 
 
+def normalize_video_url(value):
+    video = str(value or "").strip()
+
+    if not video:
+        return ""
+
+    if video.startswith("/static/"):
+        return video
+
+    parsed = urlparse(video)
+
+    if parsed.scheme in {"http", "https"} and parsed.netloc:
+        return video
+
+    return ""
+
 def load_channel():
-    return load_json(DATA_FILE, {"channel": {}, "programs": [], "poll": {"question": "", "options": {}}})
+    return load_json(
+        DATA_FILE,
+        {
+            "channel": {},
+            "programs": [],
+            "poll": {
+                "question": "",
+                "options": {}
+            }
+        }
+    )
 
 
 def init_db():
     DATA_DIR.mkdir(parents=True, exist_ok=True)
+
     with sqlite3.connect(DB_FILE) as conn:
         conn.execute("""
             CREATE TABLE IF NOT EXISTS poll_votes (
@@ -53,11 +113,16 @@ def init_db():
 def poll_counts(channel):
     options = channel.get("poll", {}).get("options", {})
     counts = {name: 0 for name in options}
+
     with sqlite3.connect(DB_FILE) as conn:
-        rows = conn.execute("SELECT option, COUNT(*) FROM poll_votes GROUP BY option").fetchall()
+        rows = conn.execute(
+            "SELECT option, COUNT(*) FROM poll_votes GROUP BY option"
+        ).fetchall()
+
     for option, count in rows:
         if option in counts:
             counts[option] = count
+
     return counts
 
 
@@ -69,20 +134,38 @@ def channel_payload():
 
 def get_program_state(channel, now=None):
     programs = channel.get("programs", [])
+
     if not programs:
-        return {"current_index": None, "next_index": None, "elapsed": 0, "remaining": 0, "total": 0}
+        return {
+            "current_index": None,
+            "next_index": None,
+            "elapsed": 0,
+            "remaining": 0,
+            "total": 0
+        }
 
     now = time.time() if now is None else now
-    total_cycle = sum(max(1, int(p.get("duration_seconds", 60))) for p in programs)
+
+    total_cycle = sum(
+        max(1, int(p.get("duration_seconds", 60)))
+        for p in programs
+    )
+
     position = now % total_cycle
     elapsed_before = 0
+
     for index, program in enumerate(programs):
-        duration = max(1, int(program.get("duration_seconds", 60)))
+        duration = max(
+            1,
+            int(program.get("duration_seconds", 60))
+        )
+
         if position < elapsed_before + duration:
             elapsed = position - elapsed_before
             remaining = duration - elapsed
             next_index = (index + 1) % len(programs)
             start_epoch = now - elapsed
+
             return {
                 "current_index": index,
                 "next_index": next_index,
@@ -92,9 +175,16 @@ def get_program_state(channel, now=None):
                 "start_epoch": start_epoch,
                 "end_epoch": start_epoch + duration,
             }
+
         elapsed_before += duration
 
-    return {"current_index": 0, "next_index": 1 % len(programs), "elapsed": 0, "remaining": programs[0].get("duration_seconds", 60), "total": programs[0].get("duration_seconds", 60)}
+    return {
+        "current_index": 0,
+        "next_index": 1 % len(programs),
+        "elapsed": 0,
+        "remaining": programs[0].get("duration_seconds", 60),
+        "total": programs[0].get("duration_seconds", 60)
+    }
 
 
 def admin_required(view):
@@ -102,7 +192,9 @@ def admin_required(view):
     def wrapped(*args, **kwargs):
         if not session.get("admin_authenticated"):
             return redirect(url_for("admin_login"))
+
         return view(*args, **kwargs)
+
     return wrapped
 
 
@@ -115,8 +207,10 @@ def index():
 def channel():
     data = channel_payload()
     state = get_program_state(data)
+
     data["state"] = state
     data["server_time"] = datetime.now(timezone.utc).isoformat()
+
     return jsonify(data)
 
 
@@ -125,9 +219,21 @@ def channel_state():
     data = channel_payload()
     state = get_program_state(data)
     programs = data.get("programs", [])
-    state["current"] = programs[state["current_index"]] if state["current_index"] is not None else None
-    state["next"] = programs[state["next_index"]] if state["next_index"] is not None else None
+
+    state["current"] = (
+        programs[state["current_index"]]
+        if state["current_index"] is not None
+        else None
+    )
+
+    state["next"] = (
+        programs[state["next_index"]]
+        if state["next_index"] is not None
+        else None
+    )
+
     state["server_epoch"] = time.time()
+
     return jsonify(state)
 
 
@@ -135,19 +241,39 @@ def channel_state():
 def poll():
     data = load_channel()
     payload = request.get_json(silent=True) or {}
+
     option = payload.get("option")
     options = data.get("poll", {}).get("options", {})
+
     if option not in options:
-        return jsonify({"ok": False, "error": "Invalid poll option"}), 400
+        return jsonify({
+            "ok": False,
+            "error": "Invalid poll option"
+        }), 400
+
     with sqlite3.connect(DB_FILE) as conn:
-        conn.execute("INSERT INTO poll_votes (option, voted_at) VALUES (?, ?)", (option, datetime.now(timezone.utc).isoformat()))
+        conn.execute(
+            "INSERT INTO poll_votes (option, voted_at) VALUES (?, ?)",
+            (
+                option,
+                datetime.now(timezone.utc).isoformat()
+            )
+        )
         conn.commit()
-    return jsonify({"ok": True, "poll": {"question": data["poll"].get("question", ""), "options": poll_counts(data)}})
+
+    return jsonify({
+        "ok": True,
+        "poll": {
+            "question": data["poll"].get("question", ""),
+            "options": poll_counts(data)
+        }
+    })
 
 
 @app.route("/api/health")
 def health():
     data = load_channel()
+
     return jsonify({
         "status": "ONLINE",
         "channel": data.get("channel", {}).get("name", "NDL Studio"),
@@ -158,28 +284,48 @@ def health():
 
 @app.route("/robots.txt")
 def robots():
-    return "User-agent: *\nAllow: /\nSitemap: /sitemap.xml\n", 200, {"Content-Type": "text/plain; charset=utf-8"}
+    return (
+        "User-agent: *\n"
+        "Allow: /\n"
+        "Sitemap: /sitemap.xml\n"
+    ), 200, {
+        "Content-Type": "text/plain; charset=utf-8"
+    }
 
 
 @app.route("/sitemap.xml")
 def sitemap():
-    return render_template("sitemap.xml"), 200, {"Content-Type": "application/xml; charset=utf-8"}
+    return render_template("sitemap.xml"), 200, {
+        "Content-Type": "application/xml; charset=utf-8"
+    }
 
 
 @app.route("/admin/login", methods=["GET", "POST"])
 def admin_login():
     error = None
+
     if request.method == "POST":
         password = request.form.get("password", "")
         expected = os.environ.get("ADMIN_PASSWORD")
-        if not expected and os.environ.get("FLASK_DEBUG", "1") != "1":
-            return render_template("admin_login.html", error="ADMIN_PASSWORD is not configured on this server."), 503
+
+        if not expected and not DEBUG:
+            return render_template(
+                "admin_login.html",
+                error="ADMIN_PASSWORD is not configured on this server."
+            ), 503
+
         expected = expected or "admin"
+
         if password and password == expected:
             session["admin_authenticated"] = True
             return redirect(url_for("admin_dashboard"))
+
         error = "Invalid admin password."
-    return render_template("admin_login.html", error=error)
+
+    return render_template(
+        "admin_login.html",
+        error=error
+    )
 
 
 @app.route("/admin/logout")
@@ -193,7 +339,12 @@ def admin_logout():
 def admin_dashboard():
     data = channel_payload()
     content = load_json(CONTENT_FILE, [])
-    return render_template("admin.html", channel=data, content=content)
+
+    return render_template(
+        "admin.html",
+        channel=data,
+        content=content
+    )
 
 
 @app.route("/api/admin/programs", methods=["POST"])
@@ -201,21 +352,58 @@ def admin_dashboard():
 def admin_programs():
     data = load_channel()
     payload = request.get_json(silent=True) or {}
+
     title = str(payload.get("title", "")).strip()
+
     if not title:
-        return jsonify({"ok": False, "error": "Programme title is required."}), 400
-    duration = max(1, int(payload.get("duration_seconds", 60)))
+        return jsonify({
+            "ok": False,
+            "error": "Programme title is required."
+        }), 400
+
+    try:
+        duration = max(
+            1,
+            int(payload.get("duration_seconds", 60))
+        )
+    except (TypeError, ValueError):
+        return jsonify({
+            "ok": False,
+            "error": "Duration must be a valid number."
+        }), 400
+
+    # URL-first video handling:
+    # An external video URL can be supplied here.
+    # If no URL is supplied, the existing local test video is used.
+    video = normalize_video_url(
+        payload.get("video", "")
+    )
+
+    if not video:
+        video = "/static/media/ndl_broadcast_test.mp4"
+
     program = {
-        "id": max([int(p.get("id", 0)) for p in data.get("programs", [])] or [0]) + 1,
+        "id": max(
+            [int(p.get("id", 0)) for p in data.get("programs", [])] or [0]
+        ) + 1,
         "title": title,
-        "type": str(payload.get("type", "Programme")).strip() or "Programme",
+        "type": str(
+            payload.get("type", "Programme")
+        ).strip() or "Programme",
         "duration_seconds": duration,
-        "video": str(payload.get("video", "/static/media/ndl_broadcast_test.mp4")).strip(),
-        "description": str(payload.get("description", "")).strip(),
+        "video": video,
+        "description": str(
+            payload.get("description", "")
+        ).strip(),
     }
+
     data.setdefault("programs", []).append(program)
     save_json(DATA_FILE, data)
-    return jsonify({"ok": True, "program": program})
+
+    return jsonify({
+        "ok": True,
+        "program": program
+    })
 
 
 @app.route("/api/admin/programs/<int:program_id>", methods=["PUT"])
@@ -223,27 +411,88 @@ def admin_programs():
 def admin_update_program(program_id):
     data = load_channel()
     payload = request.get_json(silent=True) or {}
-    program = next((p for p in data.get("programs", []) if int(p.get("id", -1)) == program_id), None)
-    if program is None:
-        return jsonify({"ok": False, "error": "Programme not found."}), 404
 
-    title = str(payload.get("title", program.get("title", ""))).strip()
+    program = next(
+        (
+            p for p in data.get("programs", [])
+            if int(p.get("id", -1)) == program_id
+        ),
+        None
+    )
+
+    if program is None:
+        return jsonify({
+            "ok": False,
+            "error": "Programme not found."
+        }), 404
+
+    title = str(
+        payload.get(
+            "title",
+            program.get("title", "")
+        )
+    ).strip()
+
     if not title:
-        return jsonify({"ok": False, "error": "Programme title is required."}), 400
+        return jsonify({
+            "ok": False,
+            "error": "Programme title is required."
+        }), 400
+
     try:
-        duration = max(1, int(payload.get("duration_seconds", program.get("duration_seconds", 60))))
+        duration = max(
+            1,
+            int(
+                payload.get(
+                    "duration_seconds",
+                    program.get("duration_seconds", 60)
+                )
+            )
+        )
     except (TypeError, ValueError):
-        return jsonify({"ok": False, "error": "Duration must be a valid number."}), 400
+        return jsonify({
+            "ok": False,
+            "error": "Duration must be a valid number."
+        }), 400
+
+    # URL-first video handling:
+    # Preserve an existing video URL when editing unless a new URL is supplied.
+    video_value = payload.get(
+        "video",
+        program.get(
+            "video",
+            "/static/media/ndl_broadcast_test.mp4"
+        )
+    )
+    video = normalize_video_url(video_value)
+
+    if not video:
+        video = "/static/media/ndl_broadcast_test.mp4"
 
     program.update({
         "title": title,
-        "type": str(payload.get("type", program.get("type", "Programme"))).strip() or "Programme",
+        "type": str(
+            payload.get(
+                "type",
+                program.get("type", "Programme")
+            )
+        ).strip() or "Programme",
         "duration_seconds": duration,
-        "video": str(payload.get("video", program.get("video", "/static/media/ndl_broadcast_test.mp4"))).strip(),
-        "description": str(payload.get("description", program.get("description", ""))).strip(),
+        "video": video,
+        "description": str(
+            payload.get(
+                "description",
+                program.get("description", "")
+            )
+        ).strip(),
     })
+
     save_json(DATA_FILE, data)
-    return jsonify({"ok": True, "program": program})
+
+    return jsonify({
+        "ok": True,
+        "program": program
+    })
 
 
 @app.route("/api/admin/programs/reorder", methods=["POST"])
@@ -251,37 +500,76 @@ def admin_update_program(program_id):
 def admin_reorder_programs():
     data = load_channel()
     payload = request.get_json(silent=True) or {}
+
     ordered_ids = payload.get("ids", [])
     programs = data.get("programs", [])
+
     if not isinstance(ordered_ids, list) or len(ordered_ids) != len(programs):
-        return jsonify({"ok": False, "error": "Send every programme ID in the new order."}), 400
+        return jsonify({
+            "ok": False,
+            "error": "Send every programme ID in the new order."
+        }), 400
 
     try:
         ordered_ids = [int(value) for value in ordered_ids]
-        by_id = {int(p.get("id")): p for p in programs}
+        by_id = {
+            int(p.get("id")): p
+            for p in programs
+        }
     except (TypeError, ValueError):
-        return jsonify({"ok": False, "error": "Programme IDs must be numeric."}), 400
+        return jsonify({
+            "ok": False,
+            "error": "Programme IDs must be numeric."
+        }), 400
 
     if set(ordered_ids) != set(by_id):
-        return jsonify({"ok": False, "error": "The new order does not match the current programmes."}), 400
+        return jsonify({
+            "ok": False,
+            "error": "The new order does not match the current programmes."
+        }), 400
 
-    data["programs"] = [by_id[program_id] for program_id in ordered_ids]
+    data["programs"] = [
+        by_id[program_id]
+        for program_id in ordered_ids
+    ]
+
     save_json(DATA_FILE, data)
-    return jsonify({"ok": True, "programs": data["programs"]})
+
+    return jsonify({
+        "ok": True,
+        "programs": data["programs"]
+    })
 
 
 @app.route("/api/admin/programs/<int:program_id>", methods=["DELETE"])
 @admin_required
 def admin_delete_program(program_id):
     data = load_channel()
+
     before = len(data.get("programs", []))
-    data["programs"] = [p for p in data.get("programs", []) if int(p.get("id", -1)) != program_id]
+
+    data["programs"] = [
+        p for p in data.get("programs", [])
+        if int(p.get("id", -1)) != program_id
+    ]
+
     if len(data["programs"]) == 0:
-        return jsonify({"ok": False, "error": "Keep at least one programme in the channel."}), 400
+        return jsonify({
+            "ok": False,
+            "error": "Keep at least one programme in the channel."
+        }), 400
+
     if len(data["programs"]) == before:
-        return jsonify({"ok": False, "error": "Programme not found."}), 404
+        return jsonify({
+            "ok": False,
+            "error": "Programme not found."
+        }), 404
+
     save_json(DATA_FILE, data)
-    return jsonify({"ok": True})
+
+    return jsonify({
+        "ok": True
+    })
 
 
 @app.route("/api/admin/content", methods=["POST"])
@@ -289,27 +577,182 @@ def admin_delete_program(program_id):
 def admin_add_content():
     content = load_json(CONTENT_FILE, [])
     payload = request.get_json(silent=True) or {}
-    title = str(payload.get("title", "")).strip()
+
+    title = str(
+        payload.get("title", "")
+    ).strip()
+
     if not title:
-        return jsonify({"ok": False, "error": "Content title is required."}), 400
-    rights = str(payload.get("rights_status", "PENDING REVIEW")).strip().upper() or "PENDING REVIEW"
-    allowed_rights = {"VERIFIED", "PENDING REVIEW", "ORIGINAL", "PUBLIC DOMAIN", "LICENSED", "NOT CLEARED"}
+        return jsonify({
+            "ok": False,
+            "error": "Content title is required."
+        }), 400
+
+    rights = str(
+        payload.get(
+            "rights_status",
+            "PENDING REVIEW"
+        )
+    ).strip().upper() or "PENDING REVIEW"
+
+    allowed_rights = {
+        "VERIFIED",
+        "PENDING REVIEW",
+        "ORIGINAL",
+        "PUBLIC DOMAIN",
+        "LICENSED",
+        "NOT CLEARED"
+    }
+
     if rights not in allowed_rights:
-        return jsonify({"ok": False, "error": "Invalid rights status."}), 400
+        return jsonify({
+            "ok": False,
+            "error": "Invalid rights status."
+        }), 400
+
     item = {
         "title": title,
-        "type": str(payload.get("type", "Programme")).strip() or "Programme",
-        "year": str(payload.get("year", "")).strip(),
-        "duration": str(payload.get("duration", "")).strip(),
-        "description": str(payload.get("description", "")).strip(),
-        "thumbnail": str(payload.get("thumbnail", "")).strip(),
-        "video": str(payload.get("video", "")).strip(),
+        "type": str(
+            payload.get("type", "Programme")
+        ).strip() or "Programme",
+        "year": str(
+            payload.get("year", "")
+        ).strip(),
+        "duration": str(
+            payload.get("duration", "")
+        ).strip(),
+        "description": str(
+            payload.get("description", "")
+        ).strip(),
+        "thumbnail": str(
+            payload.get("thumbnail", "")
+        ).strip(),
+        "video": str(
+            payload.get("video", "")
+        ).strip(),
         "rights_status": rights,
-        "source": str(payload.get("source", "")).strip(),
+        "source": str(
+            payload.get("source", "")
+        ).strip(),
     }
+
     content.append(item)
     save_json(CONTENT_FILE, content)
-    return jsonify({"ok": True, "item": item})
+
+    return jsonify({
+        "ok": True,
+        "item": item
+    })
+
+
+@app.route("/api/admin/publish-movie", methods=["POST"])
+@admin_required
+def admin_publish_movie():
+    data = load_channel()
+    content = load_json(CONTENT_FILE, [])
+    payload = request.get_json(silent=True) or {}
+
+    title = str(payload.get("title", "")).strip()
+    if not title:
+        return jsonify({
+            "ok": False,
+            "error": "Movie title is required."
+        }), 400
+
+    rights = str(
+        payload.get("rights_status", "")
+    ).strip().upper()
+
+    allowed_rights = {
+        "ORIGINAL",
+        "PUBLIC DOMAIN",
+        "LICENSED",
+        "VERIFIED"
+    }
+
+    if rights not in allowed_rights:
+        return jsonify({
+            "ok": False,
+            "error": "Movie must have ORIGINAL, PUBLIC DOMAIN, LICENSED, or VERIFIED rights status."
+        }), 400
+
+    video = normalize_video_url(payload.get("video", ""))
+    if not video:
+        return jsonify({
+            "ok": False,
+            "error": "A valid HTTP/HTTPS video URL or local /static/ URL is required."
+        }), 400
+
+    try:
+        duration = max(
+            1,
+            int(payload.get("duration_seconds", 0))
+        )
+    except (TypeError, ValueError):
+        return jsonify({
+            "ok": False,
+            "error": "Duration must be a valid number."
+        }), 400
+
+    if duration <= 0:
+        return jsonify({
+            "ok": False,
+            "error": "Movie duration is required."
+        }), 400
+
+    source = str(payload.get("source", "")).strip()
+    if not source:
+        return jsonify({
+            "ok": False,
+            "error": "Source / rights reference is required."
+        }), 400
+
+    movie_type = str(
+        payload.get("type", "Movie")
+    ).strip() or "Movie"
+
+    year = str(
+        payload.get("year", "")
+    ).strip()
+
+    description = str(
+        payload.get("description", "")
+    ).strip()
+
+    program = {
+        "id": max(
+            [int(p.get("id", 0)) for p in data.get("programs", [])] or [0]
+        ) + 1,
+        "title": title,
+        "type": movie_type,
+        "duration_seconds": duration,
+        "video": video,
+        "description": description
+    }
+
+    content_item = {
+        "title": title,
+        "type": movie_type,
+        "year": year,
+        "duration": str(duration),
+        "description": description,
+        "thumbnail": str(payload.get("thumbnail", "")).strip(),
+        "video": video,
+        "rights_status": rights,
+        "source": source
+    }
+
+    data.setdefault("programs", []).append(program)
+    content.append(content_item)
+
+    save_json(DATA_FILE, data)
+    save_json(CONTENT_FILE, content)
+
+    return jsonify({
+        "ok": True,
+        "program": program,
+        "content": content_item
+    })
 
 
 @app.route("/api/admin/poll/reset", methods=["POST"])
@@ -318,17 +761,27 @@ def admin_reset_poll():
     with sqlite3.connect(DB_FILE) as conn:
         conn.execute("DELETE FROM poll_votes")
         conn.commit()
-    return jsonify({"ok": True})
+
+    return jsonify({
+        "ok": True
+    })
 
 
+ensure_runtime_data()
 init_db()
 
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", "5000"))
+
     print("\n==============================================")
     print("  NDL Studio - LINEAR STREAMING CHANNEL")
     print("  Local Broadcast Prototype")
     print(f"  http://127.0.0.1:{port}")
     print("==============================================\n")
-    app.run(host="0.0.0.0", port=port, debug=os.environ.get("FLASK_DEBUG", "1") == "1")
+
+    app.run(
+        host="0.0.0.0",
+        port=port,
+        debug=DEBUG
+    )

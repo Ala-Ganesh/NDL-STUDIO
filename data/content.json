@@ -9,5 +9,16 @@
     "video": "/static/media/ndl_broadcast_test.mp4",
     "rights_status": "ORIGINAL",
     "source": "NDL Studio prototype"
+  },
+  {
+    "title": "Test Content",
+    "type": "Test",
+    "year": "2026",
+    "duration": "60",
+    "description": "Content library test",
+    "thumbnail": "",
+    "video": "",
+    "rights_status": "ORIGINAL",
+    "source": "NDL Studio"
   }
 ]
